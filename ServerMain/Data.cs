@@ -64,9 +64,9 @@ namespace ServerMain
 
         public static JObject SendRooms(Dictionary<string, ConnectFourRoom> d)
         {
-            List<string> l = new List<string>();
+            Dictionary<string, bool> l = new Dictionary<string, bool>();
             foreach (var v in d)
-                l.Add(v.Key);
+                l.Add(v.Key, v.Value.full);
 
             JObject message = new JObject
             {

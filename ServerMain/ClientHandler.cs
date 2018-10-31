@@ -48,6 +48,11 @@ namespace ServerMain
             reader.Start();
         }
 
+        public void ResetRoomDels()
+        {
+
+        }
+
         private void CreateDictionary()
         {
             commands.Add("rooms/get", RoomsGet);

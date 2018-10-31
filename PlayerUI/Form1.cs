@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using ServerMain;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace PlayerUI
 {
@@ -28,7 +29,6 @@ namespace PlayerUI
         {
             InitializeComponent();
             FormClosing += Form_Closing;
-            Debug.WriteLine(NameEnterPanel.Parent.Text);
             NameEnterPanel.Parent = this;
             NameEnterPanel.Show();
             GamePickPanel.Visible = false;
@@ -134,6 +134,7 @@ namespace PlayerUI
         {
             if (!myturn)
                 return;
+
             int x = e.X;
             int y = e.Y;
 
@@ -167,13 +168,15 @@ namespace PlayerUI
 
         private void RoomsReturned(JObject message)
         {
-            List<string> roomlist = JsonConvert.DeserializeObject<List<string>>((string)message["data"]);
-            Invoke((MethodInvoker)delegate () {  RoomListBox2.DataSource = roomlist; RoomListBox2.ClearSelected(); });
+            Dictionary<string, bool> roomlist = JsonConvert.DeserializeObject<Dictionary<string, bool>>((string)message["data"]);
+
+            var results = roomlist.Where(p => p.Value == false).Select(p => p.Key).ToList();
+
+            Invoke((MethodInvoker)delegate () {  RoomListBox2.DataSource = results; RoomListBox2.ClearSelected(); });
         }
 
         private void OkLogin(JObject message)
         {
-            //Invoke((MethodInvoker)delegate () { NameEnterPanel.Visible = false; });
             SetupGamePick();
         }
 

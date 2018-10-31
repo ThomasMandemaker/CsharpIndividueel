@@ -5,10 +5,12 @@
         private ClientHandler player1 = null;
         private ClientHandler player2 = null;
 
-        private string player1Name;
-        private string player2name;
+        private string player1Name = string.Empty;
+        private string player2name = string.Empty;
 
         private bool player1Turn = true;
+
+        public bool full = false;
 
         private byte[,] connectFourBoard = new byte[7,6];
         
@@ -25,19 +27,24 @@
                 player1.onDisconected += Disconected;
                 player1.WriteMessage(Data.SendPlayerType(1));
                 player1Name = playername;
+
+                if (player2 != null)
+                    RoomStart();
             }
-            else
+            else if(player2 == null)
             {
                 player2 = client;
                 player2.onDisconected += Disconected;
                 player2.WriteMessage(Data.SendPlayerType(2));
                 player2name = playername;
+                
                 RoomStart();
             }
         }
 
         private void RoomStart()
         {
+            full = true;
             player1.onGameModeSelected += GameModeSelected;
             GameModeSelected(GameType.ConnectFour);
         }
@@ -151,11 +158,17 @@
             if (username == player1Name)
             {
                 player2.WriteMessage(Data.SendPlayerWon());
+                player1 = null;
+                player1Name = string.Empty;
             }
             else
             {
                 player1.WriteMessage(Data.SendPlayerWon());
+                player2 = null;
+                player2name = string.Empty;
             }
+
+            full = false;
         }
     }
 
